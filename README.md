@@ -1,142 +1,93 @@
-#include <iostream>
+```#include <iostream>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
-// Функция для вывода  поля на экран
-void PrintBoard(char** board, int size) {
-    for (int i = 0; i < size; ++i) {
-        for (int j = 0; j < size; ++j) {
-            cout << board[i][j] << " ";
-        }
-        cout << endl;
-    }
-}
-
-// Функция для проверки выигрышнвй комбинации
-bool CheckWin(char** board, int size, char symbol) {
-    for (int i = 0; i < size; ++i) {
-        bool rowWin = true;
-        bool colWin = true;
-        for (int j = 0; j < size; ++j) {
-            if (board[i][j] != symbol)
-                rowWin = false;
-            if (board[j][i] != symbol)
-                colWin = false;
-        }
-        if (rowWin || colWin)
-            return true;
-    }
-
-    // Проверка диагонлц
-    bool diag1Win = true;
-    bool diag2Win = true;
-    for (int i = 0; i < size; ++i) {
-        if (board[i][i] != symbol)
-            diag1Win = false;
-        if (board[i][size - i - 1] != symbol)
-            diag2Win = false;
-    }
-    if (diag1Win || diag2Win)
-        return true;
-
-    return false;
-}
-
-// Функция для хода бота
-void BotMove(char** board, int size, char symbol) {
-    //  бот выбирает первое доступное пустое поле
-    for (int i = 0; i < size; ++i) {
-        for (int j = 0; j < size; ++j) {
-            if (board[i][j] == '-') {
-                board[i][j] = symbol;
-                return;
-            }
-        }
-    }
-}
-
 int main() {
-    int size;
-    cout << "Enter the size of the board: ";
-    cin >> size;
-
-    // Инициализация поля
-    char** board = new char* [size];
-    for (int i = 0; i < size; ++i) {
-        board[i] = new char[size];
-        for (int j = 0; j < size; ++j) {
-            board[i][j] = '-';
-        }
-    }
-
-    // Игровой цикл
-    char currentPlayer = 'X';
-    bool gameOver = false;
-    while (!gameOver) {
-        // Вывод  состояния поля
-        cout << "Current board:" << endl;
-        PrintBoard(board, size);
-
-        if (currentPlayer == 'X') {
-            // Ход игрока
-            int row, col;
-            cout << "Player " << currentPlayer << ", enter your move (row and column): ";
-            cin >> row >> col;
-
-            if (row < 0 || row >= size || col < 0 || col >= size || board[row][col] != '-') {
-                cout << "Error: Field doesn't exist or already taken. Please try again." << endl;
-                continue;
-            }
-
-            board[row][col] = currentPlayer;
-
-            // Проверка на победу
-            if (CheckWin(board, size, currentPlayer)) {
-                cout << "Player " << currentPlayer << " wins!" << endl;
-                gameOver = true;
-                break;
-            }
-        }
-        else {
-            // Ход бота
-            cout << "Bot's turn..." << endl;
-            BotMove(board, size, currentPlayer);
-
-            // Проверка на победу
-            if (CheckWin(board, size, currentPlayer)) {
-                cout << "Bot wins!" << endl;
-                gameOver = true;
-                break;
-            }
-        }
-
-        // Проверка на ничью
-        bool isFull = true;
-        for (int i = 0; i < size; ++i) {
-            for (int j = 0; j < size; ++j) {
-                if (board[i][j] == '-') {
-                    isFull = false;
-                    break;
+    srand(time(0)); // инициализация генератора случайных чисел
+    int capital = 100;
+    int coffee = 1, pizza = 2, tea = 1, pastry = 2;
+    char choice;
+    
+    int visitornumber = 1; // начальный номер посетителя
+    int totalvisitors = 0; // общее количество посетителей
+    
+    while (capital > 0) {
+        cout << "Твой капитал: " << capital << endl;
+        cout << "Наличие ингредиентов в составе:" << endl;
+        cout << "Кофе: " << coffee << endl;
+        cout << "Пицца: " << pizza << endl;
+        cout << "Чай: " << tea << endl;
+        cout << "Пирожок: " << pastry << endl;
+        
+        int visitorchoice = visitornumber % 4; // выбор продукта у посетителя по порядку
+        switch (visitorchoice) {
+            case 1:
+                cout << "Посетитель №" << visitornumber << " пришел." << endl;
+                cout << "Он хочет кофе." << endl;
+                cout << "Капитал: " << capital << ". Вы хотите принять заказ? (y/n)" << endl;
+                cin >> choice;
+                if (choice == 'y' && coffee > 0) {
+                    capital += 10;
+                    coffee--;
+                    cout << "Вы продали кофе! +10$" << endl;
+                } else if (choice == 'n') {
+                    cout << "Вы отказались принять заказ." << endl;
+                } else if (choice == 'y' && coffee == 0) {
+                    cout << "О нет, кофе больше нету!" << endl;
+                    cout << "Капитал: " << capital << ". Не желаете купить? (y/n)" << endl;
+                    cin >> choice;
+                    cin.ignore(); // очищаем буфер после ввода choice
+                    if (choice == 'y') {
+                        capital -= 5; 
+                        coffee++;
+                        cout << "Вы купили кофе! -5$" << endl;
+                    }
                 }
+                break;
+            case 2:
+                cout << "Посетитель №" << visitornumber << " пришел." << endl;
+                cout << "Он хочет пиццу." << endl;
+            
+                break;
+            case 3:
+                cout << "Посетитель №" << visitornumber << " пришел." << endl;
+                cout << "Он хочет чай." << endl;
+                
+                break;
+            case 0:
+                cout << "Посетитель №" << visitornumber << " пришел." << endl;
+                cout << "Он хочет пирожок." << endl;
+               
+                break;
+        }
+        
+        if (rand() % 100 < 18) { // случайное появление вора с вероятностью 18%
+            int theft = rand() % 100;
+            if (theft < 20 && capital >= 70) {
+                capital -= 70;
+                cout << "О нет, вас обворовали! -70$" << endl;
+            } else if (theft < 70 && capital >= 50) {
+                capital -= 50;
+                cout << "О нет, вас обворовали! -50$" << endl;
+            } else if (capital >= 20) {
+                capital -= 20;
+                cout << "О нет, вас обворовали! -20$" << endl;
+            } else {
+                cout << "Вор не нашел ничего ценного." << endl;
             }
-            if (!isFull) break;
         }
-        if (isFull) {
-            cout << "It's a draw!" << endl;
-            gameOver = true;
-            break;
-        }
-
-        // Смена игрока
-        currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+        
+        visitornumber++;
+        totalvisitors++; 
+        
+        cout << endl; 
     }
-
-    // Освобождение памяти
-    for (int i = 0; i < size; ++i) {
-        delete[] board[i];
-    }
-    delete[] board;
-
-
-
+    
+    cout << "Игра окончена. Ваш капитал опустился до нуля." << endl;
+    cout << "Общее количество посетителей: " << totalvisitors << endl;
+    
+    
 }
+```
